@@ -22,9 +22,23 @@ router.post(
 
 router.post(
     '/signin',
-    (req, res, next) => {
+    async (req, res, next) => {
         console.log('Login');
-        res.json({'message': 'Login'});
+        const { email, password } = req.body;
+        const user = await User.findOne({email});
+        if (!user) {
+            res.status(404).json({message: 'The user not exist', auth: false, token: null});
+        } else {
+            const validPassword = await user.validatePassword(password);
+            if (!validPassword) {
+                res.status(404).json({message: 'Password invalid', auth: false, token: null});
+            } else {
+                const token = jwt.sign( {id: user._id}, config.secret, {expiresIn: 60*60*24} );
+                res.status(200).json({message: 'Login successfully', auth: true, token});
+            }
+        }
+
+
     }
 );
 
