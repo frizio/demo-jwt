@@ -6,18 +6,19 @@ const router = Router();
 
 router.post(
     '/signup',
-    (req, res, next) => {
+    async (req, res, next) => {
         console.log('Registration');
         console.log(req.body);
         const {username, email, password} = req.body;
         console.log(username, email, password);
         const user = new User(
             {
-                username: username,
-                email: email,
-                password: password
+                username,
+                email,
+                password
             }
         );
+        user.password = await user.encryptPassword(user.password);
         console.log(user);
         res.json({'message': 'Registration'});
     }
