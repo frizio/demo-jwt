@@ -8,9 +8,7 @@ router.post(
     '/signup',
     async (req, res, next) => {
         console.log('Registration');
-        console.log(req.body);
         const {username, email, password} = req.body;
-        console.log(username, email, password);
         const user = new User(
             {
                 username,
@@ -19,8 +17,8 @@ router.post(
             }
         );
         user.password = await user.encryptPassword(user.password);
-        console.log(user);
-        res.json({'message': 'Registration'});
+        await user.save();
+        res.json({'message': 'Registration successfully'});
     }
 );
 
