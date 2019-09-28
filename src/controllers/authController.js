@@ -11,25 +11,11 @@ router.post(
     async (req, res, next) => {
         console.log('Registration');
         const {username, email, password} = req.body;
-        const user = new User(
-            {
-                username,
-                email,
-                password
-            }
-        );
+        const user = new User( {username, email, password} );
         user.password = await user.encryptPassword(user.password);
         await user.save();
-
         const token = jwt.sign( {id: user._id}, config.secret, {expiresIn: 60*60*24} );
-
-        res.json(
-            {
-                message: 'Registration successfully',
-                auth: true,
-                token
-            }
-        );
+        res.json( {message: 'Registration successfully', auth: true, token} );
     }
 );
 
