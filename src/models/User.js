@@ -17,4 +17,4 @@ userSchema.methods.encryptPassword =
     }
 ;
 
-module.exports = model('User', userSchema);
+module.exports = model('User', userSchema, 'users_with_password');
