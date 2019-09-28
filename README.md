@@ -13,3 +13,6 @@
 - touch src/app.js
 - touch src/database.js
 - touch src/config.js
+- npm i nodemon -D
+
+- npm i express mongoose jsonwebtoken bcryptjs
