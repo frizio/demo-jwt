@@ -27,14 +27,14 @@ router.post(
         const { email, password } = req.body;
         const user = await User.findOne({email});
         if (!user) {
-            res.status(404).json({message: 'The user not exist', auth: false, token: null});
+            return res.status(404).json({message: 'The user not exist', auth: false, token: null});
         } else {
             const validPassword = await user.validatePassword(password);
             if (!validPassword) {
-                res.status(404).json({message: 'Password invalid', auth: false, token: null});
+                return res.status(404).json({message: 'Password invalid', auth: false, token: null});
             } else {
                 const token = jwt.sign( {id: user._id}, config.secret, {expiresIn: 60*60*24} );
-                res.status(200).json({message: 'Login successfully', auth: true, token});
+                return res.status(200).json({message: 'Login successfully', auth: true, token});
             }
         }
 
@@ -49,15 +49,15 @@ router.get(
         console.log('Dashboard');
         const token = req.headers['x-access-token'];
         if (!token) {
-            res.status(401).json( { auth: false, message: 'No token provided'} );
+            return res.status(401).json( { auth: false, message: 'No token provided'} );
         } else {
             const decoded = jwt.verify(token, config.secret);
             console.log(decoded);
             const user = await User.findById(decoded.id, { password: 0, __v: 0 } );
             if (!user) {
-                res.status(404).json( {message: 'No user found'} );
+                return res.status(404).json( {message: 'No user found'} );
             } else {
-                res.status(200).json( {message: 'Dashboard', user: decoded.id, user} );
+                return res.status(200).json( {message: 'Dashboard', user: decoded.id, user} );
             }
         }
     }
