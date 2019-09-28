@@ -4,9 +4,6 @@ const app = express();
 
 app.set('port', process.env.PORT || 3000);
 
-// Database connection
-require('./database');
-
 // Middleware
 
 // Process JSON data
