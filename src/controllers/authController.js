@@ -24,16 +24,28 @@ router.post(
     '/signin',
     (req, res, next) => {
         console.log('Login');
-        rres.json({'message': 'Login'});
+        res.json({'message': 'Login'});
     }
 );
 
 
 router.get(
     '/me',
-    (req, res, next) => {
+    async (req, res, next) => {
         console.log('Dashboard');
-        res.json({'message': 'Dashboard'});
+        const token = req.headers['x-access-token'];
+        if (!token) {
+            res.status(401).json( { auth: false, message: 'No token provided'} );
+        } else {
+            const decoded = jwt.verify(token, config.secret);
+            console.log(decoded);
+            const user = await User.findById(decoded.id, { password: 0, __v: 0 } );
+            if (!user) {
+                res.status(404).json( {message: 'No user found'} );
+            } else {
+                res.status(200).json( {message: 'Dashboard', user: decoded.id, user} );
+            }
+        }
     }
 );
 
